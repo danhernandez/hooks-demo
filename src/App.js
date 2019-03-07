@@ -1,5 +1,4 @@
   import React, { Component } from 'react';
-  import './App.css';
   import slides from './Slides'
 
   function Carousel(props) {
@@ -7,15 +6,6 @@
       <section>{props.children}</section>
     )
   }
-
-  // class Slides extends Component {
-
-  //   render () {
-  //     return (
-  //       <ul className="c-carousel" {...this.props} />
-  //     )
-  //   }
-  // }
 
   function Slides(props) {
     return (
@@ -25,40 +15,25 @@
 
   class Slide extends Component {
 
-    // prepare the component
-    constructor () {
-      super ()
-      this.state = {
-        width: window.innerWidth
+    handleSize = (itemsToShow) => {
+      if (itemsToShow.isSmall) {
+        return 125
+      } else if (itemsToShow.isMedium) {
+        return 205
+      } else if (itemsToShow.isLarge) {
+        return 255
       }
-    }
-
-    updateDimensions = () => {
-      this.setState({
-        width: window.innerWidth
-      })
-    }
-
-    // mount / unmount
-    componentDidMount () {
-      window.addEventListener('resize', this.updateDimensions)
-    }
-
-    componentWillUnmount () {
-      window.removeEventListener('resize', this.updateDimensions)
     }
 
     render () {
-      const { index, count, image, title, duration, maturityRating, categories } = this.props
-      const { width } = this.state
+      const { itemsToShow, image, title, duration, maturityRating, categories } = this.props
 
       const styles = {
         backgroundImage: `url(${image})`,
-        width: `${width / count}px`,
-        flexBasis: `${width / count * 2}px`
+        width: `${this.handleSize(itemsToShow)}px`,
+        flexBasis: `${this.handleSize(itemsToShow)}px`,
+        height: `${(this.handleSize(itemsToShow) * 2) - 10}px`
       }
-
-      console.log('index:', index, 'count', count, 'windowWidth', width)
 
       return (
         <li
@@ -76,25 +51,76 @@
     }
   }
 
-  function App() {
+  class MediaListener extends Component {
 
+    state = {
+      matches: window.matchMedia(this.props.query).matches
+    }
+
+    componentDidMount () {
+      this.setup()
+    }
+
+    setup () {
+      let media = window.matchMedia(this.props.query)
+
+      let listener = () => this.setState({matches: media.matches})
+
+      media.addListener(listener)
+
+      this.removeListener = () => {
+        media.removeListener(listener)
+      }
+    }
+
+    componentDidUpdate (prevProps) {
+      if (prevProps.query !== this.props.query) {
+        this.removeListener()
+        this.setState({
+          matches: window.matchMedia(this.props.query).matches
+        })
+        this.setup()
+      }
+    }
+
+    componentWillUnmount () {
+      this.removeListener()
+    }
+
+    render () {
+      return this.props.children(this.state.matches)
+    }
+  }
+
+  function App() {
     return (
-      <Carousel>
-      <h1 className="o-h1">NETFLIX ORIGINALS</h1>
-        <Slides>
-          {slides.map((image, index) => (
-            <Slide
-              id={`image-${index}`}
-              key={index}
-              index={index}
-              count={slides.length}
-              image={image.img}
-              title={image.title}
-              {...image}
-            />
-          ))}
-        </Slides>
-      </Carousel>
+      <MediaListener query="(max-width: 600px)">
+        {small => (
+          <MediaListener query="(min-width: 601px) and (max-width: 1023px)">
+            {medium => (
+              <MediaListener query="(min-width: 1024px)">
+                {large => (
+                  <Carousel>
+                    <h1 className="o-h1">NETFLIX ORIGINALS</h1>
+                      <Slides>
+                        {slides.map((item, index) => (
+                          <Slide
+                            id={`image-${index}`}
+                            key={index}
+                            index={index}
+                            itemsToShow={{isSmall: small, isMedium: medium, isLarge: large}}
+                            image={item.img}
+                            {...item}
+                          />
+                        ))}
+                      </Slides>
+                    </Carousel>
+                )}
+              </MediaListener>
+            )}
+          </MediaListener>
+        )}
+      </MediaListener>
     )
   }
 
