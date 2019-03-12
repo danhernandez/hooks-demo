@@ -38,12 +38,14 @@
           style={{...styles}}
           className="c-carousel__slide"
         >
-          <span className="slide__inner">
-            {title}
-            {maturityRating}
-            {duration}
-            {categories}
-          </span>
+          <p className="slide__inner">
+          <span className="title">{title}</span>
+          <span className="maturityRating">{maturityRating}</span>
+          <span>{duration}</span>
+          {categories.map((item, index) => (
+            <span key={item+index}>{item}</span>
+          ))}
+          </p>
         </li>
       )
   }
