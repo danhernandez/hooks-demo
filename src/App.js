@@ -3,7 +3,7 @@
 
   function Carousel(props) {
     return (
-      <section>{props.children}</section>
+      <section className="o-wrapper">{props.children}</section>
     )
   }
 
@@ -13,26 +13,24 @@
     )
   }
 
-  class Slide extends Component {
-
-    handleSize = (itemsToShow) => {
-      if (itemsToShow.isSmall) {
-        return 125
-      } else if (itemsToShow.isMedium) {
-        return 205
-      } else if (itemsToShow.isLarge) {
-        return 255
-      }
+  function handleSize (itemsToShow) {
+    if (itemsToShow.isSmall) {
+      return 125
+    } else if (itemsToShow.isMedium) {
+      return 205
+    } else if (itemsToShow.isLarge) {
+      return 255
     }
+  }
 
-    render () {
-      const { itemsToShow, image, title, duration, maturityRating, categories } = this.props
+  function Slide(props) {
+      const { itemsToShow, image, title, duration, maturityRating, categories } = props
 
       const styles = {
         backgroundImage: `url(${image})`,
-        width: `${this.handleSize(itemsToShow)}px`,
-        flexBasis: `${this.handleSize(itemsToShow)}px`,
-        height: `${(this.handleSize(itemsToShow) * 2) - 10}px`
+        width: `${handleSize(itemsToShow)}px`,
+        flexBasis: `${handleSize(itemsToShow)}px`,
+        height: `${(handleSize(itemsToShow) * 2) - 10}px`
       }
 
       return (
@@ -48,7 +46,6 @@
           </span>
         </li>
       )
-    }
   }
 
   class MediaListener extends Component {

@@ -34,17 +34,27 @@ li {
   list-style-type: none;
 }
 
+.o-wrapper {
+  height: 100vh;
+  align-items: center;
+}
+
 .o-h1 {
+  display: flex;
+  height: 25vh;
+  align-items: flex-end;
   font-size: 25px;
-  font-weight: normal;
-  margin: 0 20px;
+  padding: 0 25px;
+  font-weight: 700;
 }
 
 .c-carousel {
   display: flex;
-  margin: 0 20px;
-  height: 100vh;
-  align-items: center;
+  overflow-x: scroll;
+  padding-top: 50px;
+  height: 65vh;
+  margin: 0;
+  align-items: flex-start;
 }
 
 .c-carousel__slide {
