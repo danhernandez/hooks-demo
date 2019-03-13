@@ -1,4 +1,4 @@
-  import React, { Component } from 'react';
+  import React, { useEffect, useState } from 'react';
   import slides from './Slides'
 
   function Carousel(props) {
@@ -50,7 +50,7 @@
       )
   }
 
-  class MediaListener extends Component {
+  class MediaListener extends React.Component {
 
     state = {
       matches: window.matchMedia(this.props.query).matches
